@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Yash Bhagat | Portfolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+  <!-- GSAP for smooth animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #070b20;
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.25);
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --glass: rgba(15, 23, 42, 0.7);
+      --border-subtle: rgba(148, 163, 184, 0.3);
+      --danger: #f97373;
+      --success: #22c55e;
+      --radius-xl: 24px;
+      --shadow-soft: 0 22px 60px rgba(15, 23, 42, 0.75);
+    }
+
+    #contact { padding-left:40px; padding-right: 40px; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 50%, #000 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    .page { max-width: 1120px; margin: 0 auto; padding: 24px 16px 64px; position: relative; z-index: 1; }
+
+    .blob { position: fixed; border-radius: 999px; filter: blur(40px); opacity: 0.4; z-index: 0; pointer-events: none; }
+    .blob-1 { width: 260px; height: 260px; background: radial-gradient(circle, #4f46e5, transparent); top: -40px; left: -40px; }
+    .blob-2 { width: 260px; height: 260px; background: radial-gradient(circle, #14b8a6, transparent); bottom: 40px; right: -40px; }
+
+    .mascot { position: fixed; width: 48px; height: 48px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #ffffff, #e5e7eb); display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35); transform: translate3d(-100px, -100px, 0); pointer-events: none; z-index: 10; transition: transform 0.15s ease-out; }
+    .mascot span { transform: translateY(2px); }
+
+    #cursor-glow {
+      position: fixed; width: 100px; height: 100px; pointer-events: none; border-radius: 50%;
+      background: radial-gradient(circle, rgba(56,189,248,0.35) 0%, rgba(56,189,248,0.18) 40%, rgba(56,189,248,0.07) 70%, rgba(56,189,248,0) 100%);
+      filter: blur(22px); transform: translate(-50%, -50%); transition: transform 0.06s ease-out; z-index: 9999; mix-blend-mode: screen;
+    }
+
+    header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+    .logo { display:flex; align-items:center; gap:10px; }
+    .logo-badge { width:40px; height:40px; border-radius:18px; background: radial-gradient(circle at 20% 0, #a5b4fc, #4f46e5); display:flex; align-items:center; justify-content:center; box-shadow: 0 8px 30px rgba(79,70,229,0.7); font-weight:700; }
+    .logo-text h1 { font-size:18px; font-weight:600; }
+    .logo-text p { font-size:12px; color:var(--text-muted); }
+    nav { display:flex; gap:18px; align-items:center; font-size:14px; }
+    nav a { color:var(--text-muted); padding:6px 10px; border-radius:999px; border:1px solid transparent; transition:0.2s ease; }
+    nav a:hover { color:var(--text-main); border-color:var(--accent-soft); background: rgba(15,23,42,0.7); }
+    .nav-cta { padding:8px 14px; border-radius:999px; background: linear-gradient(135deg,#4f46e5,#22c55e); color:white; box-shadow:0 14px 36px rgba(79,70,229,0.7); font-weight:500; }
+
+    .hero { display:grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1.3fr); gap:28px; align-items:center; margin-bottom:48px; }
+    .hero-heading-pill { display:inline-flex; align-items:center; gap:8px; padding:5px 10px; border-radius:999px; border:1px solid var(--accent-soft); background: rgba(15,23,42,0.85); font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:var(--text-muted); margin-bottom:14px; }
+    .hero h2 { font-size: clamp(32px,5vw,40px); line-height:1.1; margin-bottom:14px; }
+    .hero h2 span { background: linear-gradient(135deg,#a5b4fc,#38bdf8); -webkit-background-clip:text; color:transparent; }
+    .hero p { font-size:14px; color:var(--text-muted); margin-bottom:20px; max-width:520px; }
+    .hero-cta-row { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:16px; }
+    .btn-primary { padding:10px 20px; border-radius:999px; border:none; background:linear-gradient(135deg,#4f46e5,#38bdf8); color:white; font-size:14px; font-weight:600; cursor:pointer; box-shadow:0 14px 40px rgba(59,130,246,0.6); display:inline-flex; align-items:center; gap:6px; }
+    .btn-secondary { padding:9px 16px; border-radius:999px; border:1px solid var(--border-subtle); background: rgba(15,23,42,0.9); font-size:13px; color:var(--text-muted); display:inline-flex; align-items:center; gap:6px; cursor:pointer; }
+
+    .hero-right { position:relative; padding:18px; }
+    .hero-card { background: var(--glass); border-radius: var(--radius-xl); border:1px solid var(--accent-soft); box-shadow: var(--shadow-soft); padding:18px 16px; position:relative; overflow:hidden; }
+    .hero-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+    .hero-card-title { font-size:14px; font-weight:600; }
+    .hero-card-badge { font-size:11px; padding:4px 8px; border-radius:999px; border:1px solid var(--border-subtle); color:var(--text-muted); }
+    .hero-timeline { display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap:12px; font-size:12px; }
+
+    .timeline-item { padding:10px; border-radius:14px; border:1px solid rgba(148,163,184,0.28); background: rgba(15,23,42,0.96); }
+    .timeline-item small { color:var(--text-muted); display:block; margin-bottom:4px; }
+    .timeline-item strong { display:block; margin-bottom:2px; font-size:12px; }
+    .timeline-item .pill { display:inline-flex; margin-top:4px; padding:2px 6px; border-radius:999px; background: rgba(79,70,229,0.2); font-size:10px; color:#a5b4fc; }
+
+    .hero-floating-chip { position:absolute; right:10px; bottom:-16px; transform:translateY(-50%); padding:8px 10px; background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(59,130,246,0.4)); border-radius:999px; border:1px solid rgba(129,140,248,0.6); font-size:11px; display:flex; align-items:center; gap:6px; }
+    .hero-floating-chip i { font-size:16px; }
+
+    section { margin-bottom:48px; }
+    .section-header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:18px; gap:12px; }
+    .section-title { font-size:18px; font-weight:600; }
+    .section-subtitle { font-size:13px; color:var(--text-muted); }
+
+    .grid-2 { display:grid; grid-template-columns: minmax(0,1.3fr) minmax(0,1fr); gap:18px; }
+    .card { background: var(--glass); border-radius: var(--radius-xl); border:1px solid var(--border-subtle); padding:16px 16px 14px; box-shadow: 0 18px 50px rgba(15,23,42,0.75); font-size:13px; }
+    .chip-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .chip { padding:5px 10px; border-radius:999px; background: rgba(15,23,42,0.85); border:1px solid rgba(148,163,184,0.5); display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--text-muted); }
+    .chip i { font-size:14px; color:#38bdf8; }
+    .stats-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
+    .stat-pill { padding:10px 12px; border-radius:18px; background: rgba(15,23,42,0.95); border:1px solid rgba(148,163,184,0.4); font-size:11px; display:flex; flex-direction:column; gap:4px; }
+    .stat-pill strong { font-size:15px; }
+
+    .tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; font-size:11px; }
+    .tab-btn { padding:6px 12px; border-radius:999px; border:1px solid rgba(148,163,184,0.5); background: rgba(15,23,42,0.92); color:var(--text-muted); cursor:pointer; transition:0.2s ease; }
+    .tab-btn.active { background: linear-gradient(135deg,#4f46e5,#38bdf8); color:white; border-color:transparent; box-shadow:0 10px 30px rgba(37,99,235,0.7); }
+
+    .projects-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:22px; padding:10px 0; }
+    .project-card { perspective:1000px; position:relative; overflow:hidden; height:260px; opacity:1; transform:scale(1); transition: opacity 0.35s ease, transform 0.35s ease; border-radius:20px; border:1px solid rgba(148,163,184,0.35); background: rgba(15,23,42,0.6); }
+    .project-inner { width:100%; height:100%; transform-style:preserve-3d; transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); position:absolute; top:0; left:0; }
+    .project-card:hover .project-inner { transform: rotateY(180deg); }
+
+    .card-face { padding-top:28px; padding-left:28px; padding-right:20px; padding-bottom:20px; width:100%; height:100%; backface-visibility:hidden; justify-content:center; align-items:flex-start; position:absolute; top:0; left:0; }
+    .card-front-header { display:flex; gap:10px; align-items:center; margin-bottom:6px; }
+    .card-icon { width:30px; height:30px; border-radius:14px; background: rgba(15,23,42,0.95); display:flex; align-items:center; justify-content:center; }
+    .card-title { font-size:15px; font-weight:600; }
+    .card-tagline { font-size:12px; color:var(--text-muted); margin-bottom:8px; }
+    .card-stats { display:flex; flex-wrap:wrap; gap:8px; font-size:11px; color:var(--text-muted); }
+    .card-stats span { display:inline-flex; align-items:center; gap:4px; padding:3px 7px; border-radius:999px; background: rgba(15,23,42,0.96); border:1px solid rgba(148,163,184,0.5); }
+
+    .card-footer { display:flex; justify-content:space-between; align-items:center; margin-top:10px; font-size:11px; color:var(--text-muted); }
+    .card-footer span i { color:#22c55e; }
+    .card-face.back { transform: rotateY(180deg); display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:left; padding:20px 26px; gap:12px; background: radial-gradient(circle at 100% 0, rgba(56,189,248,0.28), rgba(15,23,42,0.98)); }
+
+    .back h4 { font-size:14px; margin-bottom:8px; }
+    .back ul { list-style:none; font-size:12px; color:var(--text-muted); margin-bottom:10px; }
+    .back ul li { margin-bottom:4px; display:flex; gap:6px; }
+    .back ul li::before { content:"•"; color:#38bdf8; margin-top:0; }
+
+    .badge-row { display:flex; flex-wrap:wrap; gap:6px; }
+    .badge { font-size:10px; padding:3px 8px; border-radius:999px; border:1px solid rgba(148,163,184,0.7); background: rgba(15,23,42,0.9); }
+
+    .contact-grid { display:grid; grid-template-columns: minmax(0,1.1fr) minmax(0,1fr); gap:18px; }
+    form { display:flex; flex-direction:column; gap:10px; font-size:13px; }
+    .form-group { display:flex; flex-direction:column; gap:4px; }
+    label { color:var(--text-muted); font-size:12px; }
+    input, textarea, select { padding:9px 10px; border-radius:12px; border:1px solid rgba(148,163,184,0.6); background: rgba(15,23,42,0.96); color:var(--text-main); font-size:13px; outline:none; }
+    input:focus, textarea:focus, select:focus { border-color:#38bdf8; box-shadow: 0 0 0 1px rgba(56,189,248,0.4); }
+    textarea { resize:vertical; min-height:80px; max-height:180px; }
+    .helper-text { font-size:11px; color:var(--text-muted); }
+    .status-message { margin-top:6px; font-size:12px; }
+    .status-success { color:var(--success); }
+    .status-error { color:var(--danger); }
+
+    .contact-side { font-size:13px; display:flex; flex-direction:column; gap:12px; }
+    .contact-pill { padding:10px 12px; border-radius:18px; border:1px dashed rgba(148,163,184,0.6); background: rgba(15,23,42,0.96); }
+    .contact-pill strong { display:block; margin-bottom:4px; }
+    .contact-pill a { color:#38bdf8; word-break:break-all; }
+
+    footer { margin-top:28px; font-size:11px; color:var(--text-muted); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; border-top:1px solid rgba(31,41,55,0.8); padding-top:12px; }
+
+    @media (max-width:900px) {
+      .hero { grid-template-columns:1fr; }
+      .hero-right { order:-1; }
+      header { flex-direction:column; align-items:flex-start; gap:10px; }
+      nav { margin-left:-4px; }
+    }
+    @media (max-width:700px) {
+      .grid-2, .contact-grid { grid-template-columns:1fr; }
+      .page { padding-inline:14px; }
+      .hero-card { padding:14px; }
+    }
+    @media (max-width:500px) {
+      nav { flex-wrap:wrap; }
+      .hero-floating-chip { display:none; }
+      .mascot { display:none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div id="cursor-glow"></div>
+
+  <div class="page">
+    <header>
+      <div class="logo">
+        <div class="logo-badge">Y</div>
+        <div class="logo-text">
+          <h1>Yash Bhagat</h1>
+          <p>Robotics • Embedded • AI</p>
+        </div>
+      </div>
+      <nav>
+        <a href="#projects">Projects</a>
+        <a href="#stack">Tech Stack</a>
+        <a href="#contact">Contact</a>
+        <a href="mailto:CONTACT_EMAIL" class="nav-cta">
+          <i class="ri-mail-line"></i> Hire Me
+        </a>
+      </nav>
+    </header>
+
+    <section class="hero" id="top">
+      <div class="hero-content">
+        <div class="hero-heading-pill">
+          <i class="ri-flashlight-fill"></i>
+          Robotics & embedded systems specialist
+        </div>
+        <h2>I design <span>automation, LiDAR & ML</span><br />for realistic, deployable prototypes.</h2>
+        <p>From RPLIDAR mapping with ROS on Raspberry Pi to sensor-fusion for autonomous UGVs, I build end-to-end prototypes combining hardware, ML and clean UX.</p>
+        <div class="hero-cta-row">
+          <button class="btn-primary" onclick="scrollToSection('projects')">View Projects <i class="ri-arrow-right-up-line"></i></button>
+          <button class="btn-secondary" onclick="showPopup()">Book a quick call <i class="ri-sparkling-2-line"></i></button>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="hero-card">
+          <div class="hero-card-header">
+            <div class="hero-card-title">Highlights</div>
+            <div class="hero-card-badge">Engineer • Builder</div>
+          </div>
+          <div class="hero-timeline">
+            <div class="timeline-item">
+              <small>Internships</small>
+              <strong>Enerlogs Analytics • Zeal Electromech</strong>
+              <span class="pill">Firmware & SMT</span>
+            </div>
+            <div class="timeline-item">
+              <small>Robotics</small>
+              <strong>RPLIDAR mapping (ROS) on Raspberry Pi</strong>
+              <span class="pill">LiDAR + camera fusion</span>
+            </div>
+          </div>
+
+          <div class="hero-floating-chip">
+            <i class="ri-lightbulb-flash-line"></i> Open to collaborations
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="stack">
+      <div class="section-header">
+        <div>
+          <div class="section-title">What I work with</div>
+          <div class="section-subtitle">From prototypes to production-ready PoCs.</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div style="font-weight:600;margin-bottom:6px;">Tech stack</div>
+          <p>I combine embedded platforms, LiDAR/CV, ROS/ROS2 and ML models into end-to-end systems.</p>
+          <div class="chip-row">
+            <span class="chip"><i class="ri-cpu-line"></i> Raspberry Pi 4, ESP32, Jetson</span>
+            <span class="chip"><i class="ri-fingerprint-line"></i> RPLIDAR A1M8, Cameras, IMUs</span>
+            <span class="chip"><i class="ri-brain-line"></i> Python, ROS / ROS2, CV, ML</span>
+            <span class="chip"><i class="ri-database-2-line"></i> JSON APIs, data pipelines</span>
+            <span class="chip"><i class="ri-reactjs-line"></i> React, HTML & CSS</span>
+            <span class="chip"><i class="ri-group-line"></i> Workshops & training</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="font-weight:600;margin-bottom:6px;">Quick stats</div>
+          <div class="stats-row">
+            <div class="stat-pill">
+              <span style="color:var(--text-muted);">Projects</span>
+              <strong>4</strong>
+              <span>Robotics, Embedded, IoT & Web</span>
+            </div>
+            <div class="stat-pill">
+              <span style="color:var(--text-muted);">Workshops</span>
+              <strong>50+ students</strong>
+              <span>Trained on sensors, ESP32 and robotics.</span>
+            </div>
+            <div class="stat-pill">
+              <span style="color:var(--text-muted);">Internships</span>
+              <strong>Enerlogs • Zeal Electromech</strong>
+              <span>Firmware, SMT & PCB assembly.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Project gallery</div>
+          <div class="section-subtitle">Flip a card to see impact, stack and what I actually did.</div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-filter="all">All</button>
+        <button class="tab-btn" data-filter="robotics">Robotics</button>
+        <button class="tab-btn" data-filter="embedded">Embedded</button>
+        <button class="tab-btn" data-filter="iot">IoT</button>
+        <button class="tab-btn" data-filter="web">Web</button>
+      </div>
+
+      <div class="projects-grid">
+
+        <!-- Autonomous Smart Exploration Robot -->
+        <div class="project-card" data-category="robotics">
+          <div class="project-inner">
+            <div class="card-face front">
+              <div class="card-front-header">
+                <div class="card-icon"><i class="ri-scan-2-line"></i></div>
+                <div>
+                  <div class="card-title">Autonomous Smart Exploration Robot</div>
+                  <div class="card-tagline">LiDAR + Camera — High-risk & complex environments</div>
+                </div>
+              </div>
+              <div class="card-stats">
+                <span><i class="ri-lidar-line"></i> RPLIDAR A1M8</span>
+                <span><i class="ri-camera-line"></i> Camera + CV</span>
+              </div>
+              <div class="card-footer"><span><i class="ri-robot-line"></i> Mapping, perception & autonomy</span></div>
+            </div>
+            <div class="card-face back">
+              <h4>Impact</h4>
+              <ul>
+                <li>Autonomous exploration in risky environments</li>
+                <li>LiDAR+camera sensor fusion for obstacle avoidance</li>
+                <li>ROS-based mapping and visualization</li>
+              </ul>
+              <div class="badge-row"><span class="badge">ROS</span><span class="badge">LiDAR</span><span class="badge">Perception</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Solar Panel Cleaning Robot -->
+        <div class="project-card" data-category="embedded">
+          <div class="project-inner">
+            <div class="card-face front">
+              <div class="card-front-header">
+                <div class="card-icon"><i class="ri-circuit-board-line"></i></div>
+                <div>
+                  <div class="card-title">Solar Panel Cleaning Robot</div>
+                  <div class="card-tagline">8051 microcontroller based</div>
+                </div>
+              </div>
+              <div class="card-stats">
+                <span><i class="ri-motor-line"></i> Motors & sensors</span>
+                <span><i class="ri-cpu-line"></i> 8051 MCU</span>
+              </div>
+              <div class="card-footer"><span><i class="ri-checked-line"></i> Automation for maintenance</span></div>
+            </div>
+            <div class="card-face back">
+              <h4>What I built</h4>
+              <ul>
+                <li>8051-based control system for cleaning cycles</li>
+                <li>Brush mechanism + motor drivers</li>
+                <li>Safety sensors and simple scheduling</li>
+              </ul>
+              <div class="badge-row"><span class="badge">8051</span><span class="badge">Embedded</span><span class="badge">Automation</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Long-range IoT (LoRaWAN) -->
+        <div class="project-card" data-category="iot">
+          <div class="project-inner">
+            <div class="card-face front">
+              <div class="card-front-header">
+                <div class="card-icon"><i class="ri-signal-tower-line"></i></div>
+                <div>
+                  <div class="card-title">Long-range IoT (LoRaWAN)</div>
+                  <div class="card-tagline">LoRaWAN telemetry & gateways</div>
+                </div>
+              </div>
+              <div class="card-stats">
+                <span><i class="ri-router-line"></i> LoRaWAN</span>
+                <span><i class="ri-cpu-line"></i> ESP32 nodes</span>
+              </div>
+              <div class="card-footer"><span><i class="ri-verified-badge-line"></i> Field tests completed</span></div>
+            </div>
+            <div class="card-face back">
+              <h4>Impact</h4>
+              <ul>
+                <li>Low-power telemetry nodes</li>
+                <li>Gateway + cloud ingestion prototype</li>
+                <li>Several-kilometre range tests</li>
+              </ul>
+              <div class="badge-row"><span class="badge">IoT</span><span class="badge">LoRa</span><span class="badge">Telemetry</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ChitaleSweetHome Website (React) -->
+        <div class="project-card" data-category="web">
+          <div class="project-inner">
+            <div class="card-face front">
+              <div class="card-front-header">
+                <div class="card-icon"><i class="ri-reactjs-line"></i></div>
+                <div>
+                  <div class="card-title">ChitaleSweetHome Website</div>
+                  <div class="card-tagline">Built with React — modern, responsive UI</div>
+                </div>
+              </div>
+              <div class="card-stats">
+                <span><i class="ri-reactjs-line"></i> React</span>
+                <span><i class="ri-layout-line"></i> Responsive</span>
+              </div>
+              <div class="card-footer"><span><i class="ri-rocket-line"></i> Live demo / deployed</span></div>
+            </div>
+            <div class="card-face back">
+              <h4>Key results</h4>
+              <ul>
+                <li>Fast, responsive React front-end</li>
+                <li>SEO-friendly routes and meta</li>
+                <li>Contact forms and product pages</li>
+              </ul>
+              <div class="badge-row"><span class="badge">React</span><span class="badge">UI/UX</span><span class="badge">Deployment</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Let’s build something together</div>
+          <div class="section-subtitle">Send a quick brief – it lands directly in my inbox <strong>CONTACT_EMAIL</strong>.</div>
+        </div>
+      </div>
+
+      <div class="contact-grid">
+        <div class="card">
+          <form id="contact-form">
+            <div class="form-group">
+              <label for="name">Your name</label>
+              <input id="name" name="name" placeholder="E.g. Priya Deshmukh" required />
+            </div>
+            <div class="form-group">
+              <label for="email">Work email</label>
+              <input id="email" name="email" type="email" placeholder="you@company.com" required />
+            </div>
+            <div class="form-group">
+              <label for="projectType">Project type</label>
+              <select id="projectType" name="projectType" required>
+                <option value="">Select an option</option>
+                <option>Defence / surveillance system</option>
+                <option>IoT / home & building automation</option>
+                <option>AI / ML prototype</option>
+                <option>Student training / workshop</option>
+                <option>React Website</option>
+                <option>SpringBoot/MERN Stack Website</option>
+                <option>Google/Meta Ad Campaigns</option>
+                <option>Other – let’s discuss</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="budget">Rough budget or timeline (optional)</label>
+              <input id="budget" name="budget" placeholder="E.g. 3-month PoC, ₹X budget" />
+            </div>
+            <div class="form-group">
+              <label for="message">Project idea / problem statement</label>
+              <textarea id="message" name="message" placeholder="Tell me what you’re trying to build or fix." required></textarea>
+              <div class="helper-text">The more context you share, the better I can help in the first reply.</div>
+            </div>
+
+            <button type="submit" class="btn-primary" id="submit-btn">Send enquiry <i class="ri-send-plane-2-line"></i></button>
+            <div id="status" class="status-message"></div>
+          </form>
+        </div>
+
+        <div class="card contact-side">
+          <div class="contact-pill">
+            <strong>Direct email</strong>
+            <p>Prefer writing directly? Reach me at:</p>
+            <a href="mailto:CONTACT_EMAIL">CONTACT_EMAIL</a>
+          </div>
+          <div class="contact-pill">
+            <strong>What happens next?</strong>
+            <ul style="margin-left:18px;">
+              <li style="margin-bottom:4px;">You get a reply within 24 hours.</li>
+              <li style="margin-bottom:4px;">If it’s a good fit, we schedule a quick discovery call.</li>
+              <li style="margin-bottom:4px;">Then I share milestones, timelines and architecture ideas.</li>
+            </ul>
+          </div>
+          <div class="contact-pill">
+            <strong>Looking for collaboration?</strong>
+            <p>I’m open to research collaborations, hackathons and guest sessions around ROS2, LiDAR, embedded systems and automation.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>© <span id="year"></span> Yash Bhagat. Crafted in dark mode.</span>
+      <span>Built with sensors, ROS & caffeine ☕</span>
+    </footer>
+  </div>
+
+  <script>
+    // Initialize EmailJS (keep existing key or replace with your own)
+    emailjs.init("hbpwYlugfeepKEbio");
+
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    const glow = document.getElementById("cursor-glow");
+    window.addEventListener("mousemove", (e) => {
+      glow.style.left = e.clientX + "px";
+      glow.style.top = e.clientY + "px";
+    });
+
+    const blob1 = document.querySelector(".blob-1");
+    const blob2 = document.querySelector(".blob-2");
+    window.addEventListener("mousemove", (e) => {
+      const factor = 0.02;
+      const x = (e.clientX - window.innerWidth / 2) * factor;
+      const y = (e.clientY - window.innerHeight / 2) * factor;
+      blob1.style.transform = `translate(${x}px, ${y}px)`;
+      blob2.style.transform = `translate(${-x}px, ${-y}px)`;
+    });
+
+    // GSAP entrance animations (scrollTrigger usage requires plugin; kept minimal)
+    window.addEventListener("load", () => {
+      gsap.from(".hero-content", { y: 30, opacity: 0, duration: 0.8, ease: "power2.out" });
+      gsap.from(".hero-card", { y: 40, opacity: 0, duration: 0.9, delay: 0.15, ease: "power2.out" });
+    });
+
+    // Tab filtering
+    const tabButtons = document.querySelectorAll(".tab-btn");
+    const projectCards = document.querySelectorAll(".project-card");
+    tabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        tabButtons.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const filter = btn.dataset.filter;
+        projectCards.forEach((card) => {
+          const categories = card.dataset.category.split(" ");
+          if (filter === "all" || categories.includes(filter)) card.classList.remove("hide");
+          else card.classList.add("hide");
+        });
+      });
+    });
+
+    // Contact form submit via EmailJS
+    const form = document.getElementById("contact-form");
+    const statusEl = document.getElementById("status");
+    const submitBtn = document.getElementById("submit-btn");
+
+    document.getElementById("contact-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = "Sending...";
+
+      emailjs.send("service_iozrogz", "template_hppbz2u", {
+        name: form.name.value,
+        email: form.email.value,
+        projectType: form.projectType.value,
+        budget: form.budget.value,
+        message: form.message.value
+      })
+      .then(() => {
+        statusEl.innerHTML = "Message sent successfully!";
+        statusEl.classList.remove("status-error");
+        statusEl.classList.add("status-success");
+        form.reset();
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Send enquiry <i class="ri-send-plane-2-line"></i>';
+      }, (err) => {
+        statusEl.innerHTML = "Failed to send. Try again.";
+        statusEl.classList.remove("status-success");
+        statusEl.classList.add("status-error");
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Send enquiry <i class="ri-send-plane-2-line"></i>';
+      });
+    });
+
+    // Footer year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Popup
+    function showPopup() { document.getElementById("popup").style.display = "block"; }
+    function closePopup() { document.getElementById("popup").style.display = "none"; }
+
+    // Replace visible placeholders at runtime
+    (function replacePlaceholders(){
+      const contactEmail = "yash.bhagat@example.com"; // <-- change this to your real email
+      const contactPhone = "+91 0000000000"; // <-- change this to your real phone
+      document.querySelectorAll('a[href="mailto:CONTACT_EMAIL"]').forEach(a => { a.href = `mailto:${contactEmail}`; a.textContent = contactEmail; });
+      const mailNav = document.querySelector('a.nav-cta');
+      if(mailNav) mailNav.href = `mailto:${contactEmail}`;
+      const popupPhone = document.querySelector("#popup strong");
+      if(popupPhone) popupPhone.textContent = contactPhone;
+    })();
+  </script>
+
+  <div id="popup" style="
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: rgba(15, 23, 42, 0.95); padding: 20px 24px; border-radius: 16px; border: 1px solid rgba(148,163,184,0.4);
+    color: white; font-size: 14px; width: 300px; text-align: center; box-shadow: 0 8px 40px rgba(0,0,0,0.4); display: none; z-index: 9999;
+  ">
+    <p style="margin-bottom:12px;">📞 You can call me on:</p>
+    <strong style="font-size:16px;">CONTACT_PHONE</strong>
+    <br><br>
+    <button onclick="closePopup()" style="margin-top:10px; padding:8px 14px; background:#4f46e5; border:none; border-radius:10px; color:white; cursor:pointer;">Close</button>
+  </div>
+</body>
+</html>
